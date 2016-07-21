@@ -1,4 +1,4 @@
-package attempt.another.com.anotherattempt.databaseService.product;
+package attempt.another.com.anotherattempt.databaseService;
 
 /**
  * Created by utsrivas on 7/21/2016.

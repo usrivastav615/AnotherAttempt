@@ -36,10 +36,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return "CREATE TABLE " + Constants.ProductsDetailsTableName + " ( " +
                 Constants.ProductsDetailsTableIdColumn + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 Constants.ProductsDetailsTableNameColumn + " VARCHAR(255), " +
-                Constants.ProductsDetailsTableBarCode + "VARCHAR(255), " +
-                Constants.ProductsDetailsTableCostPrice + "VARCHAR(255), " +
-                Constants.ProductsDetailsTableNameSellingPrice + "VARCHAR(255), " +
-                Constants.ProductsDetailsTableProductDetails + "VARCHAR(255));";
+                Constants.ProductsDetailsTableBarCode + " VARCHAR(255), " +
+                Constants.ProductsDetailsTableCostPrice + " VARCHAR(255), " +
+                Constants.ProductsDetailsTableNameSellingPrice + " VARCHAR(255), " +
+                Constants.ProductsDetailsTableProductDetails + " VARCHAR(255));";
     }
 
 

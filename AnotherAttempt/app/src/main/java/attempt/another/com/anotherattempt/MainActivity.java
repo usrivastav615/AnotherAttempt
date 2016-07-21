@@ -6,15 +6,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Button;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import attempt.another.com.anotherattempt.utils.BarCodeNumberToProductDetailsTask;
+import attempt.another.com.anotherattempt.databaseService.DatabaseService;
+import attempt.another.com.anotherattempt.databaseService.IDatabaseService;
+import attempt.another.com.anotherattempt.product.IProduct;
+import attempt.another.com.anotherattempt.product.Product;
+import attempt.another.com.anotherattempt.productsService.IProductsService;
+import attempt.another.com.anotherattempt.productsService.ProductsService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +24,44 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        setServices();
+        setOnClickListeners();
+    }
+
+
+    private void setServices()
+    {
+        setDatabaseService();
+        setProductsService();
+    }
+
+    private void setOnClickListeners()
+    {
+        Button insertProductButton = (Button)findViewById(R.id.insertPrdouctButton);
+        insertProductButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sampleFunctionToinsertProductInDatabase();
+            }
+        });
+
+        Button readProductDetailsByBarcodeButton = (Button)findViewById(R.id.readProductByBarcodeButton);
+        readProductDetailsByBarcodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sampleFunctionToReadProductFromBarcodeFromDatabase("999");
+            }
+        });
+
+        Button readAllProductDetailsButton = (Button)findViewById(R.id.readAllProductsButton);
+        readAllProductDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sampleFunctionToReadAllProductsFromDatabase();
+            }
+        });
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,74 +70,46 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-
-
-        String url = buildSearchString("Sachin Tendulkar", 1, 10);
-        new BarCodeNumberToProductDetailsTask().execute(url);
     }
 
-    final static String apiKey = "AIzaSyBhE6CpICDH8L0lM2jSPb2CAIgooPFLj9k";
-    final static String customSearchEngineKey = "000650548947652388287:9hcqqat9ao0";
-    final static String searchURL = "https://www.googleapis.com/customsearch/v1?";
 
-    public static String search(String pUrl) {
-        try {
-            URL url = new URL(pUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-            String line;
-            StringBuffer buffer = new StringBuffer();
-            while ((line = br.readLine()) != null) {
-                buffer.append(line);
-            }
-            return buffer.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    private static String buildSearchString(String searchString, int start, int numOfResults) {
-        String toSearch = searchURL + "key=" + apiKey + "&cx=" + customSearchEngineKey + "&q=";
-
-        // replace spaces in the search query with +
-        String newSearchString = searchString.replace(" ", "%20");
-
-        toSearch += newSearchString;
-
-        // specify response format as json
-        toSearch += "&alt=json";
-
-        // specify starting result number
-        toSearch += "&start=" + start;
-
-        // specify the number of results you need from the starting position
-        toSearch += "&num=" + numOfResults;
-
-        //System.out.println("Seacrh URL: " + toSearch);
-        return toSearch;
+    private void setDatabaseService()
+    {
+       IDatabaseService databaseService =  DatabaseService.getInstance(this);
+       databaseService.CreateDatabase();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    private void setProductsService()
+    {
+        IProductsService productsService = ProductsService.getIntance(this);
+        productsService.getAllProductsFromBarCode();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    //See this function to check how to insert product information in the database
+    private void sampleFunctionToinsertProductInDatabase()
+    {
+        IProduct product = new Product();
+        product.setProductBarCodeNumber("999");
+        product.setProductCostPrice(100);
+        product.setProductDetails("details");
+        product.setProductId("1");
+        product.setProductName("Product 1");
+        product.setProductSellingPrice(200);
+        IProductsService productsService = ProductsService.getIntance(this);
+        productsService.insertProductInDatabase(product);
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+    //See this function to check how to read a product from database
+    private void sampleFunctionToReadProductFromBarcodeFromDatabase(String barcode)
+    {
+        IProductsService productsService = ProductsService.getIntance(this);
+        productsService.getProductFromBarcode(barcode);
+    }
 
-        return super.onOptionsItemSelected(item);
+    //See this function to check how to read all products from the database
+    private void sampleFunctionToReadAllProductsFromDatabase()
+    {
+        IProductsService productsService = ProductsService.getIntance(this);
+        productsService.getAllProductsFromBarCode();
     }
 }

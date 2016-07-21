@@ -16,4 +16,10 @@ public class Constants {
     public static final String ProductsDetailsTableNameSellingPrice = "sellingprice";
     public static final String ProductsDetailsTableProductDetails = "productDetails";
 
+
+    final static String apiKey = "AIzaSyBhE6CpICDH8L0lM2jSPb2CAIgooPFLj9k";
+    final static String customSearchEngineKey = "000650548947652388287:9hcqqat9ao0";
+    final static String searchURL = "https://www.googleapis.com/customsearch/v1?";
+
+
 }

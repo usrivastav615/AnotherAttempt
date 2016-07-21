@@ -8,9 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import attempt.another.com.anotherattempt.databaseService.product.ProductItem;
 import attempt.another.com.anotherattempt.product.IProduct;
-import attempt.another.com.anotherattempt.product.Product;
 import attempt.another.com.anotherattempt.utils.Constants;
 import attempt.another.com.anotherattempt.utils.Message;
 import attempt.another.com.anotherattempt.utils.Utilities;
@@ -20,9 +18,14 @@ import attempt.another.com.anotherattempt.utils.Utilities;
  */
 public class DatabaseService implements IDatabaseService {
 
-    private SQLiteDatabase mSqLiteDatabase = null;
+    public static IDatabaseService getInstance(Context context)
+    {
+        if(mDataBaseService == null)
+            mDataBaseService = new DatabaseService(context);
+        return mDataBaseService;
+    }
 
-    DatabaseService(Context context)
+    private DatabaseService(Context context)
     {
         mContext = context;
         mSqlHelper = new SQLiteHelper(mContext);
@@ -46,12 +49,12 @@ public class DatabaseService implements IDatabaseService {
         while (cursor.moveToNext())
         {
             ProductItem productItem = new ProductItem();
-            productItem.productId = cursor.getString(1);
-            productItem.productName = cursor.getString(2);
-            productItem.productBarCodeNumber = cursor.getString(3);
-            productItem.productCostPrice = cursor.getFloat(4);
-            productItem.productSellingPrice = cursor.getFloat(5);
-            productItem.productDetails = cursor.getString(6);
+            productItem.productId = cursor.getString(0);
+            productItem.productName = cursor.getString(1);
+            productItem.productBarCodeNumber = cursor.getString(2);
+            productItem.productCostPrice = cursor.getFloat(3);
+            productItem.productSellingPrice = cursor.getFloat(4);
+            productItem.productDetails = cursor.getString(5);
             list.add(productItem);
         }
         return list;
@@ -64,12 +67,12 @@ public class DatabaseService implements IDatabaseService {
         ProductItem productItem = new ProductItem();
         while (cursor.moveToNext())
         {
-            productItem.productId = cursor.getString(1);
-            productItem.productName = cursor.getString(2);
-            productItem.productBarCodeNumber = cursor.getString(3);
-            productItem.productCostPrice = cursor.getFloat(4);
-            productItem.productSellingPrice = cursor.getFloat(5);
-            productItem.productDetails = cursor.getString(6);
+            productItem.productId = cursor.getString(0);
+            productItem.productName = cursor.getString(1);
+            productItem.productBarCodeNumber = cursor.getString(2);
+            productItem.productCostPrice = cursor.getFloat(3);
+            productItem.productSellingPrice = cursor.getFloat(4);
+            productItem.productDetails = cursor.getString(5);
         }
         return productItem;
     }
@@ -84,7 +87,8 @@ public class DatabaseService implements IDatabaseService {
         contentValues.put(Constants.ProductsDetailsTableCostPrice, productItem.productCostPrice);
         contentValues.put(Constants.ProductsDetailsTableNameSellingPrice, productItem.productSellingPrice);
         contentValues.put(Constants.ProductsDetailsTableProductDetails, productItem.productDetails);
-        long id = mSqLiteDatabase.insert(Constants.ProductsDetailsTableName, null, contentValues);
+        long id = mSqLiteDatabase.insert(Constants.ProductsDetailsTableName,
+                Constants.ProductsDetailsTableProductDetails, contentValues);
         if(id < 0)
         {
             Message.message(mContext, "Not able to insert row in Database");
@@ -93,6 +97,8 @@ public class DatabaseService implements IDatabaseService {
         return true;
     }
 
+    private static IDatabaseService mDataBaseService = null;
+    private SQLiteDatabase mSqLiteDatabase = null;
     private SQLiteHelper mSqlHelper;
     private Context mContext;
 }

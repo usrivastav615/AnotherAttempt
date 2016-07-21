@@ -1,5 +1,8 @@
 package attempt.another.com.anotherattempt.productsService;
 
+import java.util.Dictionary;
+import java.util.Map;
+
 import attempt.another.com.anotherattempt.product.IProduct;
 import attempt.another.com.anotherattempt.product.Product;
 
@@ -16,4 +19,5 @@ public interface IProductsService {
 
     public void updateProductInDatabase(IProduct product);
 
+    public Map<String, IProduct> getAllProductsFromBarCode();
 }

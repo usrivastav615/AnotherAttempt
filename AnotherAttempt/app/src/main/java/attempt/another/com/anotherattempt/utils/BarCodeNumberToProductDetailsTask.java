@@ -35,9 +35,6 @@ public class BarCodeNumberToProductDetailsTask extends AsyncTask<String, Void, S
     }
 
     protected void onPostExecute(String result) {
-        // TODO: check this.exception
-        // TODO: do something with the feed
-
         try {
             JSONObject googleResults = new JSONObject(result);
             JSONArray items = googleResults.getJSONArray("items");
@@ -50,6 +47,26 @@ public class BarCodeNumberToProductDetailsTask extends AsyncTask<String, Void, S
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
 
+    private static String buildSearchString(String searchString, int start, int numOfResults) {
+        String toSearch = Constants.searchURL + "key=" + Constants.apiKey + "&cx=" + Constants.apiKey + "&q=";
+
+        // replace spaces in the search query with +
+        String newSearchString = searchString.replace(" ", "%20");
+
+        toSearch += newSearchString;
+
+        // specify response format as json
+        toSearch += "&alt=json";
+
+        // specify starting result number
+        toSearch += "&start=" + start;
+
+        // specify the number of results you need from the starting position
+        toSearch += "&num=" + numOfResults;
+
+        //System.out.println("Seacrh URL: " + toSearch);
+        return toSearch;
     }
 }
