@@ -2,8 +2,10 @@ package attempt.another.com.anotherattempt.databaseService;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import attempt.another.com.anotherattempt.databaseService.product.ProductItem;
@@ -38,12 +40,38 @@ public class DatabaseService implements IDatabaseService {
 
     @Override
     public List<ProductItem> getAllProductsFromDatabase() {
-        return null;
+
+        ArrayList<ProductItem> list = new ArrayList<>();
+        Cursor cursor = mSqLiteDatabase.query(Constants.ProductsDetailsTableName, null, null, null, null, null, null);
+        while (cursor.moveToNext())
+        {
+            ProductItem productItem = new ProductItem();
+            productItem.productId = cursor.getString(1);
+            productItem.productName = cursor.getString(2);
+            productItem.productBarCodeNumber = cursor.getString(3);
+            productItem.productCostPrice = cursor.getFloat(4);
+            productItem.productSellingPrice = cursor.getFloat(5);
+            productItem.productDetails = cursor.getString(6);
+            list.add(productItem);
+        }
+        return list;
     }
 
     @Override
     public ProductItem getProductFromBarCode(String barcode) {
-        return null;
+        Cursor cursor = mSqLiteDatabase.query(Constants.ProductsDetailsTableName, null,
+                Constants.ProductsDetailsTableBarCode + " = '" + barcode +"'" , null, null, null, null);
+        ProductItem productItem = new ProductItem();
+        while (cursor.moveToNext())
+        {
+            productItem.productId = cursor.getString(1);
+            productItem.productName = cursor.getString(2);
+            productItem.productBarCodeNumber = cursor.getString(3);
+            productItem.productCostPrice = cursor.getFloat(4);
+            productItem.productSellingPrice = cursor.getFloat(5);
+            productItem.productDetails = cursor.getString(6);
+        }
+        return productItem;
     }
 
     @Override
